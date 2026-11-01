@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional QR Code Generator & Downloader</title>
+    <!-- Bootstrap CSS for Premium UI -->
+    <link href="https://jsdelivr.net" rel="stylesheet">
+    <!-- Google Fonts for Modern Typography -->
+    <link href="https://googleapis.com" rel="stylesheet">
+    <!-- Open source QR Code Library -->
+    <script src="https://cloudflare.com"></script>
+    <style>
+        body { 
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); 
+            min-height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-family: 'Inter', sans-serif; 
+        }
+        .card-box { 
+            background: white; 
+            padding: 30px; 
+            border-radius: 24px; 
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08); 
+            max-width: 420px; 
+            width: 100%; 
+            text-align: center; 
+            border: 1px solid rgba(255,255,255,0.8);
+        }
+        .btn-generate { 
+            background-color: #2563eb; 
+            color: white; 
+            font-weight: 600; 
+            border-radius: 12px; 
+            width: 100%; 
+            padding: 14px; 
+            border: none; 
+            cursor: pointer; 
+            transition: all 0.2s ease; 
+        }
+        .btn-generate:hover { 
+            background-color: #1d4ed8; 
+            transform: translateY(-1px);
+        }
+        .btn-download { 
+            background-color: #10b981; 
+            color: white; 
+            font-weight: 600; 
+            border-radius: 12px; 
+            width: 100%; 
+            padding: 12px; 
+            border: none; 
+            cursor: pointer; 
+            margin-top: 15px;
+            transition: all 0.2s ease;
+        }
+        .btn-download:hover { 
+            background-color: #059669; 
+        }
+        #qrcode { 
+            margin-top: 20px; 
+            padding: 20px; 
+            background: #f8fafc; 
+            border-radius: 16px; 
+            display: inline-block; 
+            border: 1px solid #e2e8f0;
+        }
+        #qrcode img {
+            margin: 0 auto;
+        }
+        .input-field {
+            padding: 14px; 
+            border-radius: 12px; 
+            border: 2px solid #e2e8f0;
+            transition: all 0.2s;
+        }
+        .input-field:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container d-flex justify-content-center px-3">
+        <div class="card-box w-100">
+            <h1 style="font-size: 26px; font-weight: 700; color: #0f172a; margin-bottom: 8px;">QR Code Generator</h1>
+            <p style="color: #64748b; font-size: 14px; margin-bottom: 24px;">Create and download high-quality QR codes for free instantly.</p>
+            
+            <input type="text" id="qr-text" placeholder="Paste URL or enter text here..." class="form-control input-field mb-3">
+            
+            <button onclick="generateQR()" class="btn-generate">
+                Generate QR Code
+            </button>
+
+            <!-- QR Code and Download Area -->
+            <div id="qrcode-parent" class="d-none">
+                <div id="qrcode"></div>
+                <button onclick="downloadQR()" class="btn-download">
+                    Download QR Code (PNG)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let parentBox = document.getElementById("qrcode-parent");
+        let qrcodeContainer = document.getElementById("qrcode");
+        let qrcode = new QRCode(qrcodeContainer, {
+            width: 200,
+            height: 200,
+            correctLevel: QRCode.CorrectLevel.H
+        });
+
+        function generateQR() {
+            let text = document.getElementById("qr-text").value.trim();
+            
+            if (text === "") {
+                alert("Please enter a link or text first!");
+                return;
+            }
+
+            // Clear previous QR code image element
+            qrcodeContainer.innerHTML = "";
+            
+            // Re-initialize to ensure crisp rendering
+            qrcode = new QRCode(qrcodeContainer, {
+                width: 200,
+                height: 200,
+                correctLevel: QRCode.CorrectLevel.H
+            });
+
+            parentBox.classList.remove("d-none");
+            qrcode.makeCode(text);
+        }
+
+        function downloadQR() {
+            // Find the image generated inside the QR code container
+            let qrImg = qrcodeContainer.querySelector("img");
+            
+            if (qrImg && qrImg.src) {
+                let link = document.createElement("a");
+                link.href = qrImg.src;
+                link.download = "qrcode.png";
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } else {
+                alert("Please generate a QR code first before downloading.");
+            }
+        }
+    </script>
+
+</body>
+</html>
+
